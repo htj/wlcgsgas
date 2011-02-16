@@ -66,7 +66,7 @@ def findMissingScaleFactors(records):
 
 
 
-def addMissingScaledValues(records, scale_factor=DEFAULT_SCALE_FACTOR):
+def addMissingScaleValues(records, scale_factor=DEFAULT_SCALE_FACTOR):
     """
     Add scaled cputime and walltime values which did not come with a scaling value.
     """
@@ -104,7 +104,7 @@ def mergeRecords(records):
 
 
 
-def collapseFieldsAndSum(records, collapse_fields):
+def collapseFields(records, collapse_fields):
     """
     Removes one or more key fields in the records and sums togther the records
     into a new batch of records for the new shared key fields.
