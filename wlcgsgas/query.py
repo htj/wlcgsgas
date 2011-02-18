@@ -16,7 +16,7 @@ Copyright: Nordic Data Grid Facility (2011)
 
 WLCG_QUERY = """
 SELECT
-    extract(YEAR FROM execution_time)::integer AS year,
+    extract(YEAR FROM execution_time)::integer  AS year,
     extract(MONTH FROM execution_time)::integer AS month,
     machine_name,
     CASE WHEN vo_name IS NULL THEN
@@ -31,12 +31,12 @@ SELECT
     vo_role,
     CASE WHEN user_identity LIKE '/C=ch/O=AliEn/OU=ALICE/CN%%' THEN 'aliprod'
          ELSE user_identity
-    END AS user_identity,
-    sum(n_jobs)   AS n_jobs,
-    sum(cputime) AS cputime,
-    sum(walltime) AS walltime,
-    sum(cputime_scaled) as cputime_scaled,
-    sum(walltime_scaled) as walltime_scaled
+    END                  AS user_identity,
+    sum(n_jobs)          AS n_jobs,
+    sum(cputime)         AS cputime,
+    sum(walltime)        AS walltime,
+    sum(cputime_scaled)  AS cputime_scaled,
+    sum(walltime_scaled) AS walltime_scaled
 FROM
     uraggregated
 WHERE
