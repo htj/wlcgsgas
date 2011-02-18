@@ -38,6 +38,13 @@ def rowsToDicts(rows):
     """
     Convert rows from database into dicts, which are much nicer to work with.
     """
+    def decimalConvert(d):
+        if d is None:
+            return d
+        else:
+            return float(d)
+
+
     dicts = []
 
     for row in rows:
@@ -46,8 +53,8 @@ def rowsToDicts(rows):
 
         d = { YEAR : year, MONTH : month, HOST : host,
               VO_NAME : vo_name, VO_GROUP : vo_group, VO_ROLE : vo_role, USER : user,
-              N_JOBS : n_jobs, CPU_TIME : cputime, WALL_TIME : walltime,
-              KSI2K_CPU_TIME : cputime_scaled, KSI2K_WALL_TIME : walltime_scaled
+              N_JOBS : n_jobs, CPU_TIME : decimalConvert(cputime), WALL_TIME : decimalConvert(walltime),
+              KSI2K_CPU_TIME : decimalConvert(cputime_scaled), KSI2K_WALL_TIME : decimalConvert(walltime_scaled)
             }
         dicts.append(d)
 
