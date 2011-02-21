@@ -23,11 +23,12 @@ CPU_TIME    = 'cpu_time'
 WALL_TIME   = 'wall_time'
 KSI2K_CPU_TIME  = 'ksi2k_cpu_time'
 KSI2K_WALL_TIME = 'ksi2k_wall_time'
+EFFICIENCY  = 'efficiency'
 
 DATE_START  = 'date_start'
 DATE_END    = 'date_end'
 
-FIELDS = ( YEAR, MONTH, TIER, HOST, VO_NAME, VO_GROUP, VO_ROLE, USER, N_JOBS, CPU_TIME, WALL_TIME, KSI2K_CPU_TIME, KSI2K_WALL_TIME )
+FIELDS = ( YEAR, MONTH, TIER, HOST, VO_NAME, VO_GROUP, VO_ROLE, USER, N_JOBS, CPU_TIME, WALL_TIME, KSI2K_CPU_TIME, KSI2K_WALL_TIME, EFFICIENCY )
 KEY_FIELDS = ( YEAR, MONTH, TIER, HOST, VO_NAME, VO_GROUP, VO_ROLE, USER )
 
 DEFAULT_SCALE_FACTOR = 1.75
@@ -154,6 +155,20 @@ def collapseFields(records, collapse_fields):
         summed_records.append( mergeRecords(records) )
 
     return summed_records
+
+
+
+def addEffiencyProperty(records):
+    """
+    Adds an effiency attribute to a list of records.
+    """
+    for rec in records:
+        if rec[WALL_TIME] < 1:
+            rec[EFFICIENCY] = '-'
+        else:
+            rec[EFFICIENCY] = int(rec[CPU_TIME] * 100 / float(rec[WALL_TIME]))
+
+    return records
 
 
 
