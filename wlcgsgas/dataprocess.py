@@ -62,6 +62,18 @@ def rowsToDicts(rows):
 
 
 
+def sortKey(record):
+    """
+    Given a record, returns a key usable for sorting.
+    """
+    attrs = []
+    for f in FIELDS:
+        if f in record:
+            attrs.append(record[f])
+    return tuple(attrs)
+
+
+
 def findMissingScaleFactors(records):
 
     missing_scale_factors = {}
@@ -134,7 +146,7 @@ def collapseFields(records, collapse_fields):
         r = rec.copy()
         for cf in collapse_fields:
             del r[cf]
-        key = createFieldKey(rec)
+        key = createFieldKey(r)
         collapsed_records.setdefault(key, []).append(r)
 
     summed_records = []
