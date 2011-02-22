@@ -25,6 +25,11 @@ KSI2K_CPU_TIME  = 'ksi2k_cpu_time'
 KSI2K_WALL_TIME = 'ksi2k_wall_time'
 EFFICIENCY  = 'efficiency'
 
+CPU_EQUIVALENTS        = 'cpu_equivalents'
+WALL_EQUIVALENTS       = 'wall_equivalents'
+KSI2K_CPU_EQUIVALENTS  = 'ksi2k_cpu_equivalents'
+KSI2K_WALL_EQUIVALENTS = 'ksi2k_wall_equivalents'
+
 DATE_START  = 'date_start'
 DATE_END    = 'date_end'
 
@@ -63,12 +68,15 @@ def rowsToDicts(rows):
 
 
 
-def sortKey(record):
+def sortKey(record, field_order=None):
     """
     Given a record, returns a key usable for sorting.
     """
+    if field_order is None:
+        field_order = FIELDS
+
     attrs = []
-    for f in FIELDS:
+    for f in field_order:
         if f in record:
             attrs.append(record[f])
     return tuple(attrs)
@@ -172,6 +180,24 @@ def addEffiencyProperty(records):
 
 
 
+def addEquivalentProperties(records, days):
+    """
+    Adds machine equivalents to records.
+    """
+    divisor = 24 * days
+
+    for rec in records:
+        rec[CPU_EQUIVALENTS]  = int( rec[CPU_TIME] / divisor )
+        rec[WALL_EQUIVALENTS] = int( rec[WALL_TIME] / divisor )
+        if KSI2K_CPU_TIME in rec:
+            rec[KSI2K_CPU_EQUIVALENTS] = int(rec[KSI2K_CPU_TIME] / divisor)
+        if KSI2K_WALL_TIME in rec:
+            rec[KSI2K_WALL_EQUIVALENTS] = int(rec[KSI2K_WALL_TIME] / divisor)
+
+    return records
+
+
+
 def tierMergeSplit(records, tier_mapping, tier_shares, default_tier):
 
     def mapHostToTier(host):
@@ -218,7 +244,6 @@ def tierMergeSplit(records, tier_mapping, tier_shares, default_tier):
 
         rc = r.copy()
         rc[TIER] = mapHostToTier(r[HOST])
-        del rc[HOST]
 
         match = False
         for rule, ratio in tier_shares:
@@ -258,4 +283,20 @@ def tierMergeSplit(records, tier_mapping, tier_shares, default_tier):
         tier_records.append( mergeRecords(t_recs) )
 
     return tier_records
+
+
+
+def splitRecords(records, split_attribute):
+
+    assert split_attribute in KEY_FIELDS, 'Invalid split attribute specified'
+
+    split_records = {}
+
+    for rec in records:
+
+        rc = rec.copy()
+        split_records.setdefault(rc[split_attribute], []).append(rc)
+        del rc[split_attribute]
+
+    return split_records
 
