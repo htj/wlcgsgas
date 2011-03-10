@@ -147,7 +147,7 @@ def collapseFields(records, collapse_fields):
     into a new batch of records for the new shared key fields.
     """
     for cf in collapse_fields:
-        assert cf in KEY_FIELDS, 'Cannot collapse invalid field %s' % cf
+        assert cf in KEY_FIELDS, 'Cannot collapse non-existing field %s' % cf
 
     collapsed_records = {}
 
